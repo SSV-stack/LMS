@@ -1,0 +1,5 @@
+Lesson Player
+[Sidebar]
+[Video]
+[Transcript]
+[Next Button]

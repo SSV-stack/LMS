@@ -1,0 +1,3 @@
+Instructor Dashboard
+[Submissions]
+[Analytics]

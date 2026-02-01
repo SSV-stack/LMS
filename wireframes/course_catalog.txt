@@ -1,0 +1,3 @@
+Course Catalog
+[Filters][Search]
+[Course Cards Grid]

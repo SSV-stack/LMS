@@ -1,0 +1,4 @@
+Course Detail Page
+[Syllabus]
+[Modules]
+[Enroll Button]

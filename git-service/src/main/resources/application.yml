@@ -1,0 +1,52 @@
+server:
+  port: 8083
+
+spring:
+  application:
+    name: git-service
+  
+  datasource:
+    url: jdbc:h2:mem:lms_git_db
+    username: sa
+    password: 
+    driver-class-name: org.h2.Driver
+  
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        format_sql: true
+    database-platform: org.hibernate.dialect.H2Dialect
+  
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8081
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+git:
+  github:
+    api-url: https://api.github.com
+    webhook-secret: ${GITHUB_WEBHOOK_SECRET:your-webhook-secret}
+  gitlab:
+    api-url: https://gitlab.com/api/v4
+    webhook-secret: ${GITLAB_WEBHOOK_SECRET:your-webhook-secret}
+  workspace:
+    base-path: ${GIT_WORKSPACE_BASE:/tmp/lms-git-workspaces}
+
+logging:
+  level:
+    in.maven.ark.lms: DEBUG

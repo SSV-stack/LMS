@@ -1,0 +1,146 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  
+  cloud:
+    gateway:
+      routes:
+        # Auth Service Routes
+        - id: auth-service
+          uri: lb://auth-service
+          predicates:
+            - Path=/api/auth/**
+          filters:
+            - StripPrefix=1
+            - name: CircuitBreaker
+              args:
+                name: auth-service
+                fallbackUri: forward:/fallback/auth
+        
+        # Course Service Routes
+        - id: course-service
+          uri: lb://course-service
+          predicates:
+            - Path=/api/courses/**
+          filters:
+            - StripPrefix=1
+            - name: CircuitBreaker
+              args:
+                name: course-service
+                fallbackUri: forward:/fallback/courses
+        
+        # IDE Service Routes
+        - id: ide-service
+          uri: lb://ide-service
+          predicates:
+            - Path=/api/ide/**
+          filters:
+            - StripPrefix=1
+            - name: CircuitBreaker
+              args:
+                name: ide-service
+                fallbackUri: forward:/fallback/ide
+        
+        # Content Service Routes
+        - id: content-service
+          uri: lb://content-service
+          predicates:
+            - Path=/api/content/**
+          filters:
+            - StripPrefix=1
+            - name: CircuitBreaker
+              args:
+                name: content-service
+                fallbackUri: forward:/fallback/content
+        
+        # Git Service Routes
+        - id: git-service
+          uri: lb://git-service
+          predicates:
+            - Path=/api/git/**
+          filters:
+            - StripPrefix=1
+            - name: CircuitBreaker
+              args:
+                name: git-service
+                fallbackUri: forward:/fallback/git
+        
+        # AI Service Routes
+        - id: ai-service
+          uri: lb://ai-service
+          predicates:
+            - Path=/api/ai/**
+          filters:
+            - StripPrefix=1
+            - name: CircuitBreaker
+              args:
+                name: ai-service
+                fallbackUri: forward:/fallback/ai
+        
+        # Notification Service Routes
+        - id: notification-service
+          uri: lb://notification-service
+          predicates:
+            - Path=/api/notifications/**
+          filters:
+            - StripPrefix=1
+            - name: CircuitBreaker
+              args:
+                name: notification-service
+                fallbackUri: forward:/fallback/notifications
+      
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOriginPatterns: "*"
+            allowedMethods: "*"
+            allowedHeaders: "*"
+            allowCredentials: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway,circuitbreakers
+  endpoint:
+    health:
+      show-details: always
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      auth-service:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 30s
+        permittedNumberOfCallsInHalfOpenState: 3
+      course-service:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 30s
+        permittedNumberOfCallsInHalfOpenState: 3
+      ide-service:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 30s
+        permittedNumberOfCallsInHalfOpenState: 3
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    org.springframework.web.reactive: DEBUG
+    reactor.netty: DEBUG
